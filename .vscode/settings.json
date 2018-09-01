@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "ft_select.h": "c",
+        "termcap.h": "c",
+        "ioctl.h": "c",
+        "termios.h": "c",
+        "types.h": "c",
+        "stat.h": "c"
+    }
+}
