@@ -6,7 +6,7 @@
 #    By: bsiche <bsiche@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/02/25 18:18:05 by bsiche            #+#    #+#              #
-#    Updated: 2018/09/01 03:53:49 by bsiche           ###   ########.fr        #
+#    Updated: 2018/09/01 23:29:14 by bsiche           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,6 +19,8 @@ CC = gcc
 SRCDIR =	srcs
 OBJDIR =	objs
 INCDIR =	includes\
+
+LIB    =    libft/
 
 NAME = ft_select
 
@@ -39,34 +41,56 @@ SRC =	main.c \
 		facts3.c \
 		stringsearch.c \
 		return.c \
-	
+
 OBJ = $(SRC:.c=.o)
 
-LIBFT =	-Llibft/
+LIBFT =	-Llibft/ -lft
 
 OBJP =		$(addprefix $(OBJDIR)/, $(SRC:.c=.o))
 INCP =		$(foreach dir, $(INCDIR), -I$(dir))
 
-all : complib $(NAME)
+CLEAR_LINE		= \033[2K
+BEGIN_LINE		= \033[A
+COL_END 		= \033[0m
+COL_RED			= \033[1;31m
+COL_GREEN		= \033[1;32m
+COL_YELLOW		= \033[1;33m
+COL_BLUE		= \033[1;34m
+COL_VIOLET		= \033[1;35m
+COL_CYAN		= \033[1;36m
+COL_WHITE		= \033[1;37m
+
+
+.PHONY: all clean fclean re
+
+all : complib $(OBJDIR) $(NAME)
 
 $(NAME): $(OBJP)
-	@$(CC) $(CFLAGS) -o $@ $^ $(INCP) $(LIBFT)
+			@$(CC) $(CFLAGS) -o $@ $^ $(INCP) $(LIBFT) -ltermcap
+			@echo -e "$(CLEAR_LINE)$(COL_CYAN)All done $(COL_END)ᕦ(ò_óˇ)ᕤ"
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
-	@$(CC) $(CFLAGS) $(ADDFLAGS) -c -o $@ $^ $(INCP)
+			@echo -e "$(CLEAR_LINE)$(COL_VIOLET)$(NAME)$(COL_END)........................ $(COL_YELLOW)$<$(COL_END)$(BEGIN_LINE)"
+			@$(CC) $(CFLAGS) -c -o $@ $^ $(INCP)
 
 $(OBJDIR):
-	@mkdir -p $(OBJDIR)
+			@echo -e "$(CLEAR_LINE)$(COL_BLUE)building $(NAME)$(COL_END)"
+			@mkdir -p $(OBJDIR)
 
 complib :
-		make -C libft/
+			@echo -e "$(CLEAR_LINE)$(COL_BLUE)building lib$(COL_END)"
+			@make -C $(LIB)
 
 clean :
-			rm -rf $(OBJ)
-			make clean -C $(LIB)
+			@echo -e "$(CLEAR_LINE)$(COL_RED)Cleaning objs dir$(COL_END)"
+			@rm -rf $(OBJDIR)
+			@echo -e "$(CLEAR_LINE)$(COL_GREEN)Done ✓$(COL_END)"
+			@echo -e "$(CLEAR_LINE)$(COL_RED)Cleaning lib dir$(COL_END)"
+			@make clean -C $(LIB)
+			@echo -e "$(CLEAR_LINE)$(COL_GREEN)Done ✓$(COL_END)"
 
 fclean :	clean
-			rm -rf $(NAME)
-			make fclean -C $(LIB)
+			@rm -rf $(NAME)
+			@make fclean -C $(LIB)
 
 re :		fclean all
